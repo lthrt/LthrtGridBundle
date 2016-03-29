@@ -1,10 +1,10 @@
 <?php
 
-namespace Lthrt\GridBundle\Model;
+namespace Lthrt\GridBundle\Model\Maker;
 
 class Mapper
 {
-    use GetSetTrait;
+    use \Lthrt\GridBundle\Model\Util\GetSetTrait;
 
     private $em;
 
@@ -13,6 +13,7 @@ class Mapper
         $this->em = $em;
     }
 
+    // Mapping Aliases seems unnecessary
     public function mapQueryBuilderAliases($qb)
     {
         if (count($qb->getDqlPart('from')) > 1) {
@@ -64,6 +65,36 @@ class Mapper
             $q = str_replace($aliasKey . ".", $aliases[$aliasKey] . ".", $q);
             $q = str_replace(" " . $aliasKey . " ", " " . $aliases[$aliasKey] . " ", $q);
         }
+        $q = $this->em->createQuery($q);
+
+        return $q;
+    }
+
+    public function mapQueryBuilderPartials($qb, $g)
+    {
+        if (count($qb->getDqlPart('from')) > 1) {
+            throw new \Exception('Grid must use querybuilder with single root alias.');
+        }
+
+        var_dump($g->column);
+
+        foreach ($g->column as $alias => $column) {
+            $field[strstr($alias, '.', true)][] = substr(strstr($alias, '.'), 1);
+        }
+
+        foreach ($g->column as $alias => $column) {
+            if (in_array('id', $field[strstr($alias, '.', true)])) {
+            } else {
+                array_unshift($field[strstr($alias, '.', true)], 'id');
+            }
+        }
+
+        $qb->resetDqlPart('select');
+        foreach ($field as $alias => $fields) {
+            $qb->addSelect('partial ' . $alias . '.{' . implode(',', $fields) . '}');
+        }
+
+        $q = $qb->getQuery()->getDQL();
         $q = $this->em->createQuery($q);
 
         return $q;

@@ -1,8 +1,8 @@
 services:
     lg.maker:
-        class: Lthrt\GridBundle\Model\Maker
+        class: Lthrt\GridBundle\Model\Maker\Maker
         arguments: [ "@doctrine.orm.entity_manager", "@router", "@lg.dumper" ]
 
     lg.dumper:
-        class: Lthrt\GridBundle\Model\Dumper
+        class: Lthrt\GridBundle\Model\Maker\Dumper
         arguments: [ "@templating" ]

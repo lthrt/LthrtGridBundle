@@ -1,15 +1,19 @@
 <?php
 
-namespace Lthrt\GridBundle\Model;
+namespace Lthrt\GridBundle\Model\Util;
 
 trait OptionsTrait
 {
     private $opt = [];
 
-    public function getOpt($option = null)
+    public function getOpt($opt = null)
     {
-        if ($option && isset($this->opt[$option])) {
-            return $this->opt[$option];
+        if ($opt) {
+            if (isset($this->opt[$opt])) {
+                return $this->opt[$opt];
+            } else {
+                return null;
+            }
         } else {
             return $this->opt;
         }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Lthrt\GridBundle\Model;
+namespace Lthrt\GridBundle\Model\Util;
 
 /**
  * GetSet Trait

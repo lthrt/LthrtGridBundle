@@ -1,15 +1,19 @@
 <?php
 
-namespace Lthrt\GridBundle\Model;
+namespace Lthrt\GridBundle\Model\Util;
 
 trait AttributesTrait
 {
     private $attr = [];
 
-    public function getAttr($attrib = null)
+    public function getAttr($attr = null)
     {
-        if ($attrib && isset($this->attr[$attrib])) {
-            return $this->attr[$attrib];
+        if ($attr) {
+            if (isset($this->attr[$attr])) {
+                return $this->attr[$attr];
+            } else {
+                return null;
+            }
         } else {
             return $this->attr;
         }

@@ -1,10 +1,12 @@
 <?php
-namespace Lthrt\GridBundle\Model;
+namespace Lthrt\GridBundle\Model\Maker;
 
 // use Knp\Component\Pager\Paginator;
 
 class Dumper
 {
+
+    use \Lthrt\GridBundle\Model\Util\GetSetTrait;
 
     private $twig;
 
@@ -27,29 +29,6 @@ class Dumper
     public function __toString()
     {
         return "Grid Dumper-- Don't print this";
-    }
-
-    /**
-     * Get twig
-     *
-     * @return
-     */
-
-    public function getTwig()
-    {
-        return $this->twig;
-    }
-
-    /**
-     * Set twig
-     *
-     * @param
-     * @return $this
-     */
-    public function setTwig($twig)
-    {
-        $this->twig = $twig;
-        return $this;
     }
 
     public function dumpResults($results)
