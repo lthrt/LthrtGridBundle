@@ -1,4 +1,8 @@
 services:
-#    lthrt_grid.example:
-#        class: Lthrt\GridBundle\Example
-#        arguments: [@service_id, "plain_value", %parameter%]
+    lg.maker:
+        class: Lthrt\GridBundle\Model\Maker
+        arguments: [ "@doctrine.orm.entity_manager", "@router", "@lg.dumper" ]
+
+    lg.dumper:
+        class: Lthrt\GridBundle\Model\Dumper
+        arguments: [ "@templating" ]
