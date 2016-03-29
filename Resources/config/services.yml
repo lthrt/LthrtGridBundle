@@ -1,0 +1,4 @@
+services:
+#    lthrt_grid.example:
+#        class: Lthrt\GridBundle\Example
+#        arguments: [@service_id, "plain_value", %parameter%]
