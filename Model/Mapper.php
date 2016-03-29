@@ -13,7 +13,7 @@ class Mapper
         $this->em = $em;
     }
 
-    public function mapQueryBuilder($qb)
+    public function mapQueryBuilderAliases($qb)
     {
         if (count($qb->getDqlPart('from')) > 1) {
             throw new \Exception('Grid must use querybuilder with single root alias.');
@@ -24,9 +24,6 @@ class Mapper
         $from                        = $qb->getDqlPart('from')[0];
         $aliases[$from->getAlias()]  = str_replace('\\', '_', $from->getFrom()) . '__' . $from->getAlias();
         $entities[$from->getAlias()] = $from->getFrom();
-
-        var_dump($aliases);
-        var_dump($entities);
 
         $joins = $qb->getDqlPart('join');
 
@@ -67,7 +64,8 @@ class Mapper
             $q = str_replace($aliasKey . ".", $aliases[$aliasKey] . ".", $q);
             $q = str_replace(" " . $aliasKey . " ", " " . $aliases[$aliasKey] . " ", $q);
         }
+        $q = $this->em->createQuery($q);
 
-        return $this->em->createQuery($q);
+        return $q;
     }
 }

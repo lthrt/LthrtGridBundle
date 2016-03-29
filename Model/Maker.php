@@ -8,9 +8,11 @@ class Maker
 
     private $em;
     private $dumper;
-    private $router;
+    // Grid
+    private $g;
     // Query
     private $q;
+    private $router;
 
     public function __construct($em, $router, $dumper)
     {
@@ -27,4 +29,12 @@ class Maker
         $this->q = $mapper->mapQueryBuilder($qb);
         return $this;
     }
+
+    public function init($opt = [], $attr = [])
+    {
+        $this->g = new Grid($opt, $attr);
+        $this->g->addSection(new Head($opt, $attr));
+        $this->g->addSection(new Body($opt, $attr));
+    }
+
 }
