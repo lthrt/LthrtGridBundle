@@ -2,7 +2,7 @@
 
 namespace Lthrt\GridBundle\Model;
 
-class Section implements \JsonSerializable
+class Section
 {
     use AttributesTrait;
     use GetSetTrait;

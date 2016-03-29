@@ -2,7 +2,7 @@
 
 namespace Lthrt\GridBundle\Model;
 
-class Column implements \JsonSerializable
+class Column
 {
     use AttributesTrait;
     use GetSetTrait;

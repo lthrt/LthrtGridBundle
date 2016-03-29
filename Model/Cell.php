@@ -2,7 +2,7 @@
 
 namespace Lthrt\GridBundle\Model;
 
-class Cell implements \JsonSerializable
+class Cell
 {
     use AttributesTrait;
     use GetSetTrait;

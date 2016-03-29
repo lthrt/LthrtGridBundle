@@ -2,7 +2,7 @@
 
 namespace Lthrt\GridBundle\Model;
 
-class Grid implements \JsonSerializable
+class Grid
 {
     use AttributesTrait;
     use GetSetTrait;
