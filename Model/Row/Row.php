@@ -2,6 +2,9 @@
 
 namespace Lthrt\GridBundle\Model\Row;
 
+use Lthrt\GridBundle\Model\Cell\Cell;
+use Lthrt\GridBundle\Model\Row\Row;
+
 class Row
 {
     use \Lthrt\GridBundle\Model\Util\AttributesTrait;
@@ -11,12 +14,12 @@ class Row
 
     private $_cell = [];
 
-    public function __construct($opt = null, $attr = null)
+    public function __construct($opt = [], $attr = [])
     {
         // For building Grid
         $this->opt = $opt;
         // for Header-type Rows reset this
-        $this->opt['tag'] = 'TR';
+        $this->opt['tag'] = 'tr';
 
         //For rendering HTMl attributes
         $this->attr = $attr;
@@ -24,7 +27,7 @@ class Row
 
     public function addCell(Cell $cell)
     {
-        $this->cell[] = $cell;
+        $this->_cell[] = $cell;
     }
 
     public function jsonFields($full = false)
@@ -45,9 +48,30 @@ class Row
                         }, $this->_cell),
                 ]
             );
+        } else {
+            $fields = array_merge($fields,
+                [
+                    '_cell' => array_map(
+                        function ($c) use ($full) {
+                            return $c->jsonFields($full);
+                        }, $this->_cell),
+                ]
+            );
         }
 
         return $fields;
     }
 
+    public function html()
+    {
+        $td = implode("\n", array_map(function ($t) {return $t->html();}, $this->_cell));
+        $attr = "";
+        if ($this->attr) {
+            foreach ($this->attr as $key => $value) {
+                $attr .= " " . $key . "=\"" . $value . "\"";
+            }
+        }
+        $tr = "<" . $this->getOpt('tag') . $attr . ">\n" . $td . "\n</" . $this->getOpt('tag') . ">";
+        return $tr;
+    }
 }

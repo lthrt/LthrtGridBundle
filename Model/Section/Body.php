@@ -6,9 +6,9 @@ class Body extends Section
 {
     private $grid;
 
-    public function __construct($opt = null, $attr = null)
+    public function __construct($opt = [], $attr = [])
     {
         parent::__construct($opt, $attr);
-        $this->setOpt(['tag' => 'TBODY']);
+        $this->setOpt(['tag' => 'tbody']);
     }
 }

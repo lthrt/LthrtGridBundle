@@ -9,13 +9,13 @@ class Cell
     use \Lthrt\GridBundle\Model\Util\JsonTrait;
     use \Lthrt\GridBundle\Model\Util\OptionsTrait;
 
-    private $row;
-
-    public function __construct($opt = null, $attr = null)
+    public function __construct($opt = [], $attr = [])
     {
         // For building Grid
-        $this->opt        = $opt;
-        $this->opt['tag'] = 'TD';
+        $this->opt = $opt;
+        if (!isset($this->opt['tag'])) {
+            $this->opt['tag'] = 'td';
+        }
 
         //For rendering HTMl attributes
         $this->attr = $attr;
@@ -30,5 +30,20 @@ class Cell
             ARRAY_FILTER_USE_KEY
         );
         return $fields;
+    }
+
+    public function html()
+    {
+        $attr = "";
+        if ($this->attr) {
+            foreach ($this->attr as $key => $value) {
+                $attr .= " " . $key . "=\"" . $value . "\"";
+            }
+        }
+
+        $val = ('td' == $this->getOpt('tag')) ? $this->getOpt('value') : $this->getOpt('header');
+
+        $td = "<" . $this->getOpt('tag') . $attr . ">" . $val . "</" . $this->getOpt('tag') . ">";
+        return $td;
     }
 }

@@ -12,7 +12,7 @@ class Column
 
     private $_grid;
 
-    public function __construct($opt = null, $attr = null)
+    public function __construct($opt = [], $attr = [])
     {
         // For building Grid
         $this->opt = $opt;

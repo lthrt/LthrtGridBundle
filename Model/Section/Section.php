@@ -2,6 +2,8 @@
 
 namespace Lthrt\GridBundle\Model\Section;
 
+use Lthrt\GridBundle\Model\Row\Row;
+
 class Section
 {
     use \Lthrt\GridBundle\Model\Util\AttributesTrait;
@@ -11,7 +13,7 @@ class Section
 
     private $_row = [];
 
-    public function __construct($opt = null, $attr = null)
+    public function __construct($opt = [], $attr = [])
     {
         // For building Grid
         $this->opt = $opt;
@@ -43,9 +45,30 @@ class Section
                         }, $this->_row),
                 ]
             );
+        } else {
+            $fields = array_merge($fields,
+                [
+                    '_row' => array_map(
+                        function ($r) use ($full) {
+                            return $r->jsonFields($full);
+                        }, $this->_row),
+                ]
+            );
         }
 
         return $fields;
     }
 
+    public function html()
+    {
+        $tr = implode("\n", array_map(function ($t) {return $t->html();}, $this->_row));
+        $attr = "";
+        if ($this->attr) {
+            foreach ($this->attr as $key => $value) {
+                $attr .= " " . $key . "=\"" . $value . "\"";
+            }
+        }
+        $sec = "<" . $this->getOpt('tag') . $attr . ">\n" . $tr . "\n</" . $this->getOpt('tag') . ">";
+        return $sec;
+    }
 }

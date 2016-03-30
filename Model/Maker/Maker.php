@@ -3,7 +3,9 @@
 namespace Lthrt\GridBundle\Model\Maker;
 
 use Doctrine\ORM\Query;
+use Lthrt\GridBundle\Model\Cell\Cell;
 use Lthrt\GridBundle\Model\Grid\Grid;
+use Lthrt\GridBundle\Model\Row\Row;
 use Lthrt\GridBundle\Model\Section\Body;
 use Lthrt\GridBundle\Model\Section\Head;
 
@@ -11,6 +13,7 @@ class Maker
 {
     use \Lthrt\GridBundle\Model\Util\GetSetTrait;
 
+    private $aliases;
     private $em;
     private $dumper;
     // Grid
@@ -24,51 +27,53 @@ class Maker
         $this->em     = $em;
         $this->router = $router;
         $this->dumper = $dumper;
+        $this->g      = new Grid();
+        $this->g->addSection(Grid::HEAD, new Head());
+        $this->g->addSection(Grid::BODY, new Body());
     }
 
-    public function mapQueryBuilder($qb)
+    public function hydrateFromQB($qb)
     {
-        // Map these and store final query in local field
-        //
-        $mapper  = new Mapper($this->em);
-        $this->q = $mapper->mapQueryBuilder($qb);
-        return $this;
-    }
+        $mapper        = new Mapper($this->em);
+        $map           = $mapper->mapQueryBuilder($qb, $this->g);
+        $this->q       = $map['q'];
+        $this->aliases = $map['aliases'];
+        $results       = $this->q->getResult(Query::HYDRATE_SCALAR);
 
-    public function mapQueryBuilderPartials($qb)
-    {
-        // Map these and store final query in local field
-        //
-        $mapper  = new Mapper($this->em);
-        $this->q = $mapper->mapQueryBuilderPartials($qb, $this->g);
-        return $this;
-    }
-
-    public function init($opt = [], $attr = [])
-    {
-        $this->g = new Grid($opt, $attr);
-        $this->g->addSection(new Head($opt, $attr));
-        $this->g->addSection(new Body($opt, $attr));
-    }
-
-    public function hydrate($q = null)
-    {
-        if ($q) {
-        } else {
-            $q = $this->$q;
-        }
-        $results = $q->getResult(Query::HYDRATE_SCALAR);
         foreach ($results as $key => $result) {
+            if (0 == $key) {
+                $header = new Row();
+            }
+            $row = new Row();
             foreach ($result as $field => $value) {
-                $_field = str_replace('.', '_', $field);
-                if (isset($this->g->column[$_field])) {
-                    $results[$key][$field] = $this->g->column[$_field]->getValue($value);
+                $class = strstr($field, "__", true);
+                $rest  = substr(strstr($field, "__"), 2);
+                $alias = strstr(substr(strstr($field, "__"), 2), '_', true);
+                $prop  = substr(strstr(substr(strstr($field, "__"), 2), '_'), 1);
+                if (isset($this->g->column[$field])) {
+                    $cell       = new Cell();
+                    $cell->opt  = ['value' => $this->g->column[$field]->getValue($value)];
+                    $cell->attr = ['class' => 'grid_cell'];
+                    $cell->attr = ['entity_id' => $result[
+                        $class . '__' . $alias . '_' . "id"],
+                    ];
+                    $row->addCell($cell);
+                    $results[$key][$field] = $this->g->column[$field]->getValue($value);
+                    if (0 == $key) {
+                        $hCell       = new Cell(['tag' => 'th']);
+                        $hCell->opt  = ['header' => $this->g->column[$field]->getOpt('header')];
+                        $hCell->attr = ['class' => 'grid_header'];
+                        $hCell->attr = ['entity_class' => $class];
+                        $hCell->attr = ['entity_prop' => $prop];
+                        $header->addCell($hCell);
+                    }
                 } else {
                     unset($results[$key][$field]);
                 }
             }
+            $this->g->getBody()->addRow($row);
         }
-
-        return $results;
+        $this->g->getHead()->addRow($header);
+        print_r($this->g->html());
     }
 }
