@@ -18,8 +18,8 @@ trait ValueTrait
             }
         } elseif ($value instanceof \DateTime) {
             // if no override defined, check if date
-            $format         = $this->getOpt('dateFormat') ?: 'Y-m-d';
-            $result[$field] = $value->format($format);
+            $format = $this->getOpt('dateFormat') ?: 'Y-m-d';
+            return $value->format($format);
         } elseif (is_object($value)) {
             // if object check for string representation
             if (method_exists($value, '__toString')) {

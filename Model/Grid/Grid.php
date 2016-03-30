@@ -50,6 +50,11 @@ class Grid
         return $this;
     }
 
+    public function clearColumns()
+    {
+        return $this->_column = [];
+    }
+
     public function getColumn()
     {
         return $this->_column;

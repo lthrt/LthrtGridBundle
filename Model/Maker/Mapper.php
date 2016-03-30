@@ -60,7 +60,6 @@ class Mapper
             };
         }
 
-        // var_dump($g->column);
         foreach ($g->column as $alias => $column) {
             $g->reAliasColumn($alias, $aliases[strstr($alias, '.', true)] . '_' . substr(strstr($alias, '.'), 1));
         }

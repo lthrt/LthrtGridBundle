@@ -4,6 +4,7 @@ namespace Lthrt\GridBundle\Model\Maker;
 
 use Doctrine\ORM\Query;
 use Lthrt\GridBundle\Model\Cell\Cell;
+use Lthrt\GridBundle\Model\Column\Column;
 use Lthrt\GridBundle\Model\Grid\Grid;
 use Lthrt\GridBundle\Model\Row\Row;
 use Lthrt\GridBundle\Model\Section\Body;
@@ -20,6 +21,7 @@ class Maker
     private $g;
     // Query
     private $q;
+    private $results;
     private $router;
 
     public function __construct($em, $router, $dumper)
@@ -32,15 +34,50 @@ class Maker
         $this->g->addSection(Grid::BODY, new Body());
     }
 
-    public function hydrateFromQB($qb)
+    public function init($qb)
     {
         $mapper        = new Mapper($this->em);
         $map           = $mapper->mapQueryBuilder($qb, $this->g);
         $this->q       = $map['q'];
         $this->aliases = $map['aliases'];
-        $results       = $this->q->getResult(Query::HYDRATE_SCALAR);
+        $this->results = $this->q->getResult(Query::HYDRATE_SCALAR);
+    }
 
-        foreach ($results as $key => $result) {
+    public function rawFromQB($qb)
+    {
+        // creates own column config
+        $this->init($qb);
+        $this->g->clearColumns();
+        foreach ($this->results as $key => $result) {
+            if (0 == $key) {
+                $header = new Row();
+            }
+            $row = new Row();
+            foreach ($result as $field => $value) {
+                if (!isset($this->g->column[$field])) {
+                    $this->g->addColumn($field, new Column());
+                }
+                $cell       = new Cell();
+                $cell->opt  = ['value' => $this->g->column[$field]->getValue($value)];
+                $cell->attr = ['class' => 'grid_cell'];
+                $row->addCell($cell);
+                $results[$key][$field] = $this->g->column[$field]->getValue($value);
+                if (0 == $key) {
+                    $hCell       = new Cell(['tag' => 'th']);
+                    $hCell->opt  = ['header' => substr(strstr($field, '__'), 2)];
+                    $hCell->attr = ['class' => 'grid_header'];
+                    $header->addCell($hCell);
+                }
+            }
+            $this->g->getBody()->addRow($row);
+        }
+        $this->g->getHead()->addRow($header);
+    }
+
+    public function hydrateFromQB($qb)
+    {
+        $this->init($qb);
+        foreach ($this->results as $key => $result) {
             if (0 == $key) {
                 $header = new Row();
             }
