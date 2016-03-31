@@ -14,12 +14,15 @@ class Row
 
     private $_cell = [];
 
+    const TH = 'th';
+    const TR = 'tr';
+
     public function __construct($opt = [], $attr = [])
     {
         // For building Grid
         $this->opt = $opt;
         // for Header-type Rows reset this
-        $this->opt['tag'] = 'tr';
+        $this->opt['tag'] = Cell::TR;
 
         //For rendering HTMl attributes
         $this->attr = $attr;

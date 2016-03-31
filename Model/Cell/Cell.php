@@ -9,12 +9,14 @@ class Cell
     use \Lthrt\GridBundle\Model\Util\JsonTrait;
     use \Lthrt\GridBundle\Model\Util\OptionsTrait;
 
+    const TD = 'td';
+
     public function __construct($opt = [], $attr = [])
     {
         // For building Grid
         $this->opt = $opt;
         if (!isset($this->opt['tag'])) {
-            $this->opt['tag'] = 'td';
+            $this->opt['tag'] = Cell::TD;
         }
 
         //For rendering HTMl attributes

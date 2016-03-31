@@ -90,8 +90,10 @@ class Maker
                 if (isset($this->g->column[$field])) {
                     $cell       = new Cell();
                     $cell->opt  = ['value' => $this->g->column[$field]->getValue($value)];
-                    $cell->attr = ['class' => 'grid_cell'];
-                    $cell->attr = ['entity_id' => $result[
+                    $cell->attr = ['id' => $class . '__' . $result[
+                        $class . '__' . $alias . '_' . "id"]];
+                    $cell->attr = ['class' => trim('grid_cell ' . $this->g->column[$field]->getOpt('cell_attr') ?: '')];
+                    $cell->attr = ['data-entity-id' => $result[
                         $class . '__' . $alias . '_' . "id"],
                     ];
                     $row->addCell($cell);
@@ -100,8 +102,8 @@ class Maker
                         $hCell       = new Cell(['tag' => 'th']);
                         $hCell->opt  = ['header' => $this->g->column[$field]->getOpt('header')];
                         $hCell->attr = ['class' => 'grid_header'];
-                        $hCell->attr = ['entity_class' => $class];
-                        $hCell->attr = ['entity_prop' => $prop];
+                        $hCell->attr = ['data-entity-class' => $class];
+                        $hCell->attr = ['data-entity-prop' => $prop];
                         $header->addCell($hCell);
                     }
                 } else {
@@ -111,6 +113,5 @@ class Maker
             $this->g->getBody()->addRow($row);
         }
         $this->g->getHead()->addRow($header);
-        print_r($this->g->html());
     }
 }
