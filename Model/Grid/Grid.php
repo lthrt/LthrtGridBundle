@@ -95,7 +95,7 @@ class Grid
                 ]
             );
         }
-        return $fields;
+        return ['table' => $fields];
     }
 
     public function html()

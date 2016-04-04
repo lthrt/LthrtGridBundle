@@ -22,7 +22,7 @@ class Row
         // For building Grid
         $this->opt = $opt;
         // for Header-type Rows reset this
-        $this->opt['tag'] = Cell::TR;
+        $this->opt['tag'] = Row::TR;
 
         //For rendering HTMl attributes
         $this->attr = $attr;

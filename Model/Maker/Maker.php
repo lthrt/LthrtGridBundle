@@ -34,7 +34,40 @@ class Maker
         $this->g->addSection(Grid::BODY, new Body());
     }
 
-    public function init($qb)
+    public function rawFromQuery($q)
+    {
+        // creates own column config
+        // this cannot easily rewrite the query, so the path names and such like
+        // will have to be manually done, probably in a twig template
+        $this->results = $q->getResult(Query::HYDRATE_SCALAR);
+        $this->g->clearColumns();
+        foreach ($this->results as $key => $result) {
+            if (0 == $key) {
+                $header = new Row();
+            }
+            $row = new Row();
+            foreach ($result as $field => $value) {
+                if (!isset($this->g->column[$field])) {
+                    $this->g->addColumn($field, new Column());
+                }
+                $cell       = new Cell();
+                $cell->opt  = ['value' => $this->g->column[$field]->getValue($value)];
+                $cell->attr = ['class' => 'grid_cell'];
+                $row->addCell($cell);
+                $results[$key][$field] = $this->g->column[$field]->getValue($value);
+                if (0 == $key) {
+                    $hCell       = new Cell(['tag' => 'th']);
+                    $hCell->opt  = ['header' => substr(strstr($field, '__'), 2)];
+                    $hCell->attr = ['class' => 'grid_header'];
+                    $header->addCell($hCell);
+                }
+            }
+            $this->g->getBody()->addRow($row);
+        }
+        $this->g->getHead()->addRow($header);
+    }
+
+    public function initFromQB($qb)
     {
         $mapper        = new Mapper($this->em);
         $map           = $mapper->mapQueryBuilder($qb, $this->g);
@@ -46,7 +79,9 @@ class Maker
     public function rawFromQB($qb)
     {
         // creates own column config
-        $this->init($qb);
+        // this cannot easily rewrite the query, so the path names and such like
+        // will have to be manually done, probably in a twig template
+        $this->initFromQB($qb);
         $this->g->clearColumns();
         foreach ($this->results as $key => $result) {
             if (0 == $key) {
@@ -76,7 +111,7 @@ class Maker
 
     public function hydrateFromQB($qb)
     {
-        $this->init($qb);
+        $this->initFromQB($qb);
         foreach ($this->results as $key => $result) {
             if (0 == $key) {
                 $header = new Row();
@@ -92,7 +127,7 @@ class Maker
                     $cell->opt  = ['value' => $this->g->column[$field]->getValue($value)];
                     $cell->attr = ['id' => $class . '__' . $result[
                         $class . '__' . $alias . '_' . "id"]];
-                    $cell->attr = ['class' => trim('grid_cell ' . $this->g->column[$field]->getOpt('cell_attr') ?: '')];
+                    $cell->attr = ['class' => trim('grid-cell ' . $this->g->column[$field]->getOpt('cellAttr') ?: '')];
                     $cell->attr = ['data-entity-id' => $result[
                         $class . '__' . $alias . '_' . "id"],
                     ];
@@ -101,9 +136,9 @@ class Maker
                     if (0 == $key) {
                         $hCell       = new Cell(['tag' => 'th']);
                         $hCell->opt  = ['header' => $this->g->column[$field]->getOpt('header')];
-                        $hCell->attr = ['class' => 'grid_header'];
+                        $hCell->attr = ['class' => 'grid-header'];
                         $hCell->attr = ['data-entity-class' => $class];
-                        $hCell->attr = ['data-entity-prop' => $prop];
+                        $hCell->attr = ['data-entity-property' => $prop];
                         $header->addCell($hCell);
                     }
                 } else {
