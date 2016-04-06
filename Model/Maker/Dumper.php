@@ -5,7 +5,6 @@ namespace Lthrt\GridBundle\Model\Maker;
 
 class Dumper
 {
-
     use \Lthrt\GridBundle\Model\Util\GetSetTrait;
 
     private $twig;
@@ -43,12 +42,14 @@ class Dumper
     public function dumpDQL($qb)
     {
         $twig = $this->getTwig();
+
         return $twig->render('LighthartGridBundle:Dump:dql.html.twig', ['qb' => $qb]);
     }
 
     public function dumpSQL($qb)
     {
         $twig = $this->getTwig();
+
         return $twig->render('LighthartGridBundle:Dump:sql.html.twig', ['qb' => $qb]);
     }
 }

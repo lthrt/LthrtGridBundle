@@ -12,7 +12,7 @@ trait OptionsTrait
             if (isset($this->opt[$opt])) {
                 return $this->opt[$opt];
             } else {
-                return null;
+                return;
             }
         } else {
             return $this->opt;
@@ -29,6 +29,7 @@ trait OptionsTrait
             return $this;
         } else {
             $this->opt[$option] = $value;
+
             return $this;
         }
     }
@@ -37,10 +38,10 @@ trait OptionsTrait
     {
         if ($option && isset($this->opt[$option])) {
             unset($this->opt[$option]);
+
             return $this;
         } else {
             return $this;
         }
     }
-
 }

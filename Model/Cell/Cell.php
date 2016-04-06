@@ -31,6 +31,7 @@ class Cell
             },
             ARRAY_FILTER_USE_KEY
         );
+
         return $fields;
     }
 
@@ -46,6 +47,7 @@ class Cell
         $val = ('td' == $this->getOpt('tag')) ? $this->getOpt('value') : $this->getOpt('header');
 
         $td = "<" . $this->getOpt('tag') . $attr . ">" . $val . "</" . $this->getOpt('tag') . ">";
+
         return $td;
     }
 }

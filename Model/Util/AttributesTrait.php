@@ -12,7 +12,7 @@ trait AttributesTrait
             if (isset($this->attr[$attr])) {
                 return $this->attr[$attr];
             } else {
-                return null;
+                return;
             }
         } else {
             return $this->attr;
@@ -29,6 +29,7 @@ trait AttributesTrait
             return $this;
         } else {
             $this->attr[$attr] = $value;
+
             return $this;
         }
     }
@@ -37,6 +38,7 @@ trait AttributesTrait
     {
         if ($attrib && isset($this->attr[$attrib])) {
             unset($this->attr[$attrib]);
+
             return $this;
         } else {
             return $this;

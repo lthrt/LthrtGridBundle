@@ -11,6 +11,7 @@ trait ValueTrait
         if ($this->getOpt('value')) {
             if (is_callable($this->getOpt('value'))) {
                 $function = $this->getOpt('value');
+
                 return $function($value);
             } else {
                 // This will be a single value upa nd down the row
@@ -19,6 +20,7 @@ trait ValueTrait
         } elseif ($value instanceof \DateTime) {
             // if no override defined, check if date
             $format = $this->getOpt('dateFormat') ?: 'Y-m-d';
+
             return $value->format($format);
         } elseif (is_object($value)) {
             // if object check for string representation

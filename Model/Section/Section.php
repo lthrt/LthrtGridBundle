@@ -69,6 +69,7 @@ class Section
             }
         }
         $sec = "<" . $this->getOpt('tag') . $attr . ">\n" . $tr . "\n</" . $this->getOpt('tag') . ">";
+
         return $sec;
     }
 }

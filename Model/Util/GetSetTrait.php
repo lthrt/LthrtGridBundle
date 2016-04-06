@@ -3,10 +3,9 @@
 namespace Lthrt\GridBundle\Model\Util;
 
 /**
- * GetSet Trait
+ * GetSet Trait.
  *
  * For discussion see: http://www.epixa.com/2010/05/the-best-models-are-easy-models.html
- *
  */
 trait GetSetTrait
 {

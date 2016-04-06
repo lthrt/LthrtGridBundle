@@ -31,6 +31,7 @@ class Grid
     public function addSection($alias, Section $section)
     {
         $this->_section[$alias] = $section;
+
         return $this;
     }
 
@@ -47,6 +48,7 @@ class Grid
     public function addColumn($alias, Column $column)
     {
         $this->_column[$alias] = $column;
+
         return $this;
     }
 
@@ -64,6 +66,7 @@ class Grid
     {
         $this->_column[$new] = $this->_column[$old];
         unset($this->_column[$old]);
+
         return $this->_column;
     }
 
@@ -95,6 +98,7 @@ class Grid
                 ]
             );
         }
+
         return ['table' => $fields];
     }
 
@@ -108,6 +112,7 @@ class Grid
             }
         }
         $table = "<" . $this->getOpt('tag') . $attr . ">\n" . $sec . "\n</" . $this->getOpt('tag') . ">";
+
         return $table;
     }
 }

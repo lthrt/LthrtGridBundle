@@ -3,7 +3,6 @@
 namespace Lthrt\GridBundle\Model\Row;
 
 use Lthrt\GridBundle\Model\Cell\Cell;
-use Lthrt\GridBundle\Model\Row\Row;
 
 class Row
 {
@@ -75,6 +74,7 @@ class Row
             }
         }
         $tr = "<" . $this->getOpt('tag') . $attr . ">\n" . $td . "\n</" . $this->getOpt('tag') . ">";
+
         return $tr;
     }
 }
